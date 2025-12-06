@@ -36,7 +36,7 @@ pipeline {
                     script {
                         dir('client') {
                             echo 'Building frontend Image'
-                            def frontendImage = "${$DOCKER_USERNAME}/frontend:${BUILD_NUMBER}"
+                            def frontendImage = "${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}"
                             sh "docker build -t ${frontendImage} ."
 
                             echo 'Pushing to DockerHub'
