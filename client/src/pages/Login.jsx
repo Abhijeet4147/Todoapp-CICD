@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "/api"
+// const API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -9,7 +10,7 @@ const Login = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const API_URL = "/api";
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

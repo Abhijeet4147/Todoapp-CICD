@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-
-const API_URL = import.meta.env.VITE_API_URL + '/todos';
+const API_URL = '/api/todos';
+// const API_URL = import.meta.env.VITE_API_URL + '/todos';
 
 const FILTERS = [
   { label: 'All', value: 'all' },
