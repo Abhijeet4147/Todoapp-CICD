@@ -78,7 +78,7 @@ pipeline {
 
                             withCredentials([usernamePassword(credentialsId:"${GITHUB_CREDENTIALS}",usernameVariable:'GIT_USERNAME',passwordVariable:'GIT_TOKEN')]){
                                 sh """
-                                    git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/ABhijeet4147/k8s-manifests.git HEAD:main
+                                    git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Abhijeet4147/k8s-manifests.git HEAD:main
                                 """
                             }
                             echo 'Manifest repository updated.'
