@@ -50,26 +50,29 @@ pipeline {
                 }
 
         }
-        stage('updating image tags in kubernetes manifests'){
+        stage('Update Kubernetes Manifests'){
 
                 steps {
                     script {
-                            echo 'cloning manifest repository.'
-                            sh "rm -rf k8s-repo" //remove the old folder if it exits 
-                            sh "git clone ${MANIFEST_GIT_REPO} k8s-repo"
-                            dir('k8s-repo'){
+                        echo 'cloning manifest repository.'
+                        sh "rm -rf k8s-repo" //remove the old folder if it exits 
+                        sh "git clone ${MANIFEST_GIT_REPO} k8s-repo"
+                        dir('k8s-repo'){
                             echo 'updating image tags in kubernetes manifests'
 
                             sh 'git config user.email "jenkins@bot.com"'
                             sh 'git config user.name "Jenkins Pipeline"'
 
+                            //THIS UPDATE BACKEND DEPLOYMENT
                             sh """
-                                sed -i 's|image: .*/backend:.*|image: ${DOCKER_USERNAME}/backend:${BUILD_NUMBER}|g' \
-                                charts/backend/deployment.yaml
+                            sed -i 's|image: .*/backend:.*|image: ${DOCKER_USERNAME}/backend:${BUILD_NUMBER}|g' \
+                            charts/backend/deployment.yaml
                             """
+
+                            //THIS UPDATE FRONTEND DEPLOYMENT
                             sh """
-                                sed -i 's|image: .*/frontend:.*|image: ${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}|g' \
-                                charts/frontend/deployment.yaml
+                            sed -i 's|image: .*/frontend:.*|image: ${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}|g' \
+                            charts/frontend/deployment.yaml
                             """
 
                             echo 'Committiog changes to manifest repo.'
@@ -77,9 +80,9 @@ pipeline {
                             sh "git commit -m 'Update image tag to build ${BUILD_NUMBER}'"
 
                             withCredentials([usernamePassword(credentialsId:"${GITHUB_CREDENTIALS}",usernameVariable:'GIT_USERNAME',passwordVariable:'GIT_TOKEN')]){
-                                sh """
-                                    git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Abhijeet4147/k8s-manifests.git HEAD:main
-                                """
+                            sh """
+                                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Abhijeet4147/k8s-manifests.git HEAD:main
+                            """
                             }
                             echo 'Manifest repository updated.'
                         }
