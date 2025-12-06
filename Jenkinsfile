@@ -79,7 +79,7 @@ pipeline {
                             sh 'git add .'
                             sh "git commit -m 'Update image tag to build ${BUILD_NUMBER}'"
 
-                            withCredentials([usernamePassword(credentialsId:"${GITHUB_CREDENTIALS}",usernameVariable:'GIT_USERNAME',passwordVariable:'GIT_TOKEN')]){
+                            withCredentials([usernamePassword(credentialsId:"${GIT_CREDENTIALS}",usernameVariable:'GIT_USERNAME',passwordVariable:'GIT_TOKEN')]){
                             sh """
                                 git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Abhijeet4147/k8s-manifests.git HEAD:main
                             """
