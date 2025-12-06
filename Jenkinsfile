@@ -66,13 +66,13 @@ pipeline {
                             //THIS UPDATE BACKEND DEPLOYMENT
                             sh """
                             sed -i 's|image: .*/backend:.*|image: ${DOCKER_USERNAME}/backend:${BUILD_NUMBER}|g' \
-                            charts/backend/deployment.yaml
+                            k8s/charts/backend/deployment.yaml
                             """
 
                             //THIS UPDATE FRONTEND DEPLOYMENT
                             sh """
                             sed -i 's|image: .*/frontend:.*|image: ${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}|g' \
-                            charts/frontend/deployment.yaml
+                            k8s/charts/frontend/deployment.yaml
                             """
 
                             echo 'Committiog changes to manifest repo.'
