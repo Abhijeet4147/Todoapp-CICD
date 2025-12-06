@@ -1,0 +1,105 @@
+pipeline {
+    agent any
+
+    environment {
+        
+        DOCKER_USERNAME = 'abhijeet55'
+        MANIFEST_GIT_REPO = 'https://github.com/Abhijeet4147/k8s-manifests.git'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-login'
+        GIT_CREDENTIALS = 'github-git-creds'
+    }
+    stages {
+
+        stage('build backend iamge'){
+
+                steps {
+                    script {
+                        dir('server') {
+                            echo 'Building backend Image'
+                            def backendImage = "${DOCKER_USERNAME}/backend:${BUILD_NUMBER}"
+                            sh "docker build -t ${backendImage} ."
+
+                            echo 'Pushing to DockerHub'
+                            withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'USERNAME',passwordVariable:'PASSWORD')]) {
+                                sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                                sh "docker push ${backendImage}"
+                            }
+                            echo 'Backend image pushed successfully.'
+                        }
+                    }
+                }
+
+        }
+        stage('build frontend image'){
+
+                steps {
+                    script {
+                        dir('client') {
+                            echo 'Building frontend Image'
+                            def frontendImage = "${$DOCKER_USERNAME}/frontend:${BUILD_NUMBER}"
+                            sh "docker build -t ${frontendImage} ."
+
+                            echo 'Pushing to DockerHub'
+                            withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'USERNAME',passwordVariable:'PASSWORD')]) {
+                                sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                                sh "docker push ${frontendImage}"
+                            }
+                            echo 'frontend image pushed successfully.'
+                        }
+                    }
+                }
+
+        }
+        stage('updating image tags in kubernetes manifests'){
+
+                steps {
+                    script {
+                            echo 'cloning manifest repository.'
+                            sh "rm -rf k8s-repo" //remove the old folder if it exits 
+                            sh "git clone ${MANIFEST_GIT_REPO} k8s-repo"
+                            dir('k8s-repo'){
+                            echo 'updating image tags in kubernetes manifests'
+
+                            sh 'git config user.email "jenkins@bot.com"'
+                            sh 'git config user.name "Jenkins Pipeline"'
+
+                            sh """
+                                sed -i 's|image: .*/backend:.*|image: ${DOCKER_USERNAME}/backend:${BUILD_NUMBER}|g' \
+                                charts/backend/deployment.yaml
+                            """
+                            sh """
+                                sed -i 's|image: .*/frontend:.*|image: ${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}|g' \
+                                charts/frontend/deployment.yaml
+                            """
+
+                            echo 'Committiog changes to manifest repo.'
+                            sh 'git add .'
+                            sh "git commit -m 'Update image tag to build ${BUILD_NUMBER}'"
+
+                            withCredentials([usernamePassword(credentialsId:"${GITHUB_CREDENTIALS}",usernameVariable:'GIT_USERNAME',passwordVariable:'GIT_TOKEN')]){
+                                sh """
+                                    git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/ABhijeet4147/k8s-manifests.git HEAD:main
+                                """
+                            }
+                            echo 'Manifest repository updated.'
+                        }
+                    }
+                }
+            }
+        }
+
+
+        post {
+            success {
+                echo 'Pipeline completed successfully.Image build and manifest updated'
+            }
+            failure {
+                echo 'Pipeline failed.'
+            }
+            always {
+                echo 'cleaning up workspace.'
+                cleanWs()
+            }
+        }
+
+}
