@@ -30,7 +30,7 @@ const Signup = () => {
       if (!res.ok) throw new Error(data.error || 'Signup failed');
       setSuccess('Signup successful! Redirecting to login...');
       setForm({ username: '', email: '', password: '' });
-      setTimeout(() => navigate('/login'), 1000); // Redirect after short 1.test build
+      setTimeout(() => navigate('/login'), 1000); // Redirect after short 1.test build 2.test
     } catch (err) {
       setError(err.message);
     } finally {
