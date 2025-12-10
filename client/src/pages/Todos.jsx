@@ -249,7 +249,7 @@ const Todos = () => {
           <div className="text-2xl font-extrabold">{completedToday}</div>
         </div>
       </div>
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-blue-700 tracking-tight">My Todos</h2>
+      <h2 className="text-3xl font-extrabold mb-6 text-center text-blue-700 tracking-tight">Welcome to my todo list</h2>
       <form onSubmit={handleAddTodo} className="flex flex-col gap-2 mb-6 max-w-2xl mx-auto">
         <div className="flex gap-2">
           <input
