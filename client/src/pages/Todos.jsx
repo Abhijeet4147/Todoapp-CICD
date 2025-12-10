@@ -425,7 +425,7 @@ const Todos = () => {
                                     </button>
                                   ))}
                                   <button
-                                    className="ml-auto flex items-center gap-1 text-red-600 hover:text-red-800 px-2 py-1 rounded transition hover:bg-red-50"
+                                    className="ml-auto flex items-center gap-1 text-green-600 hover:text-red-800 px-2 py-1 rounded transition hover:bg-red-50"
                                     onClick={() => handleDelete(todo._id)}
                                     title="Delete"
                                   >
