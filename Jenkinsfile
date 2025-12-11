@@ -16,6 +16,9 @@ pipeline {
                     script {
                         dir('server') {
                             echo 'Building backend Image'
+                            echo "--- DEBUGGING FILE STRUCTURE ---"
+                            sh "ls -la client/" 
+                            echo "--- END DEBUG ---"
                             def backendImage = "${DOCKER_USERNAME}/backend:${BUILD_NUMBER}"
                             sh "docker build -t ${backendImage} ."
 
