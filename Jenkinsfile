@@ -37,7 +37,7 @@ pipeline {
                         dir('client') {
                             echo 'Building frontend Image'
                             echo "--- DEBUGGING FILE STRUCTURE ---"
-                            sh "ls -la client/" 
+                            sh "ls -la" 
                             echo "--- END DEBUG ---"                            
                             def frontendImage = "${DOCKER_USERNAME}/frontend:${BUILD_NUMBER}"
                             sh "docker build -t ${frontendImage} ."
